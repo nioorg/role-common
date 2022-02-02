@@ -1,7 +1,7 @@
-Role Name
+Role Common
 =========
 
-A brief description of the role goes here.
+Common Ansible role: contains all the tasks to run to setup and initialize a system.
 
 Requirements
 ------------
