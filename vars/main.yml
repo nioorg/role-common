@@ -1,2 +1,12 @@
 ---
-# vars file for roles/common
+apt:
+  tools:
+    - vim
+    - ufw
+    - fail2ban
+# network:
+#   hostname: "hostname" # TODO required or better default (inventory_hostname)
+#   domain: "domain" # TODO required or better default
+timezone: Europe/Rome
+admin_accounts: []
+user_accounts: []

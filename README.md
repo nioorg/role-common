@@ -3,6 +3,10 @@ Role Common
 
 Common Ansible role: contains all the tasks to run to setup and initialize a system.
 
+By default, ansible will first connect to the host for gathering facts. If host is unable to be connected, ansible will return failed and stop.
+You need to disable gathering facts to prevent connection failed. Now we can use expect to tackle the first login process, and set the public key. Finally gather facts with setup if you need it.
+
+
 Requirements
 ------------
 

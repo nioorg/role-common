@@ -1,0 +1,44 @@
+# Default parameters
+- name: Set defaults
+  connection: local
+  set_fact:
+    # Default ssh key-file path
+    ssh_key_file: "{{ ssh_key_file | default('~/.ssh/' + network.hostname + '.' + network.domain + '-' + username + '-rsa') }}"
+    # By default don't use any ssh passphrase
+    ssh_passphrase: "{{ ssh_passphrase | default(None) }}"
+        
+# Generate keypair for the user
+- name: "Generate openssh key for the user on such host: {{ username }}"
+  community.crypto.openssh_keypair:
+    path: "{{ ssh_key_file }}"
+    passphrase: "{{ ssh_passphrase }}"
+  delegate_to: localhost
+
+# TODO create user password (variable or randomically generated)
+
+# Create the user
+- name: "Create user {{ username }}"
+  block:
+    - name: "Create user {{ username }} [1/3 - Create user with sudo privileges]"
+      user:
+        name: "{{ username }}"
+        state: present
+        groups: "{{ user_groups | default([]) }}"
+        append: true
+        create_home: true
+        shell: /bin/bash
+
+    - name: "Create user {{ username }} [2/3 - Set authorized key for remote user]"
+      authorized_key:
+        user: "{{ username }}"
+        state: present
+        key: "{{ lookup('file', ssh_key_file + '.pub') }}"
+        exclusive: True
+        
+    - name: "Create user {{ username }} [2/3 - add user to sudoers"
+      lineinfile:
+        path: "/etc/sudoers"
+        state: "present"
+        line: "{{ username }} ALL=(ALL) NOPASSWD: ALL"
+      when: '"sudo" in user_groups'
+  become: true
