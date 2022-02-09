@@ -64,7 +64,7 @@
 # that are passwordless. Furthermore, disable login to the
 # "root" user.
 
-- name: Add user "{{ item.username }}"
+- name: Add administrators
   include_tasks: create-user.yml
   vars:
     username: "{{ item.username }}"
@@ -74,7 +74,7 @@
     ssh_passphrase: "{{ item.ssh.passphrase }}"
   loop: "{{ admin_accounts }}"
 
-- name: Add user "{{ item.username }}"
+- name: Add users
   include_tasks: create-user.yml
   vars:
     username: "{{ item.username }}"
@@ -139,14 +139,20 @@
 # ###############################
 
 # Update the hostame of the machine and its
-# configuration in /etc/fstab
+# configuration in /etc/hosts.
+# It will point your hostname to 127.0.0.1.
 
-- name: Set hostname
-  hostname:
-    name: "{{ network.hostname }}.{{ network.domain }}"
+- name: Set hostname [1/2 - update /etc/hosts]
+  lineinfile:
+    path: /etc/hosts
+    search_string: "{{ ansible_hostname }}"
+    line: "127.0.0.1 {{ inventory_hostname }}"
   become: true
 
-# TODO maybe required: update /etc/fstab hostname
+- name: Set hostname [2/2 - update system hostname]
+  hostname:
+    name: "{{ inventory_hostname }}"
+  become: true
 
 # ###############################
 # Timezone configuration
