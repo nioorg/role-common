@@ -15,13 +15,13 @@
 - name: If host unreachable, try to perform first-time login and user setup
   block:
     # Save new-user credentials
-    - name: If unreachable [1/5 - save new user credentials]
+    - name: If unreachable [1/4 - save new user credentials]
       connection: local
       set_fact:
         ansible_new_login_username: "{{ ansible_user }}"
         ansible_new_login_password: "{{ ansible_password | default(ansible_first_login_password) }}"
 
-    - name: If unreachable [2/5 - change the password if required]
+    - name: If unreachable [2/4 - change the password if required]
       delegate_to: localhost
       expect:
         command: sshpass -p {{ ansible_first_login_password }} ssh {{ ansible_ssh_common_args | default('') }} {{ ansible_first_login_user }}@{{ ansible_host }}
@@ -32,26 +32,26 @@
           "Retype new password:": "{{ ansible_new_login_password }}"
       ignore_errors: true
 
-    - name: If unreachable [3/5 - create/edit the admin account]
+    - name: If unreachable [3/4 - create/edit the admin account]
       include_tasks: create-user.yml
       vars:
         # Custom vars
         username: "{{ ansible_new_login_username }}"
+        password: "{{ lookup('password', '~/secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt') }}"
+        ssh_key_file: "{{ '~/.secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/rsa' }}"
         user_groups:
           - sudo
         # Ansible: forward authentication vars
         ansible_user: "{{ ansible_first_login_user }}"
         ansible_password: "{{ ansible_first_login_password }}"
+        ansible_become_pass: "{{ ansible_first_login_password }}"
 
-    - name: If unreachable [4/5 - reboot machine]
-      reboot:
-      become: true
-
-    - name: If unreachable [5/5 - remove first-login account (if not root)]
+    - name: If unreachable [4/4 - remove first-login account (if not root)]
       ansible.builtin.user:
         name: "{{ ansible_first_login_user }}"
         state: absent
         remove: yes
+        force: yes
       when: ansible_first_login_user != 'root'
       become: true
   when: connect_rs is unreachable
@@ -68,9 +68,10 @@
   include_tasks: create-user.yml
   vars:
     username: "{{ item.username }}"
+    password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt'))"
     user_groups:
       - sudo
-    ssh_key_file: "{{ item.ssh.key_file }}"
+    ssh_key_file: "{{ item.ssh.key_file | default('~/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
     ssh_passphrase: "{{ item.ssh.passphrase }}"
   loop: "{{ admin_accounts }}"
 
@@ -78,7 +79,8 @@
   include_tasks: create-user.yml
   vars:
     username: "{{ item.username }}"
-    ssh_key_file: "{{ item.ssh.key_file }}"
+    password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt'))"
+    ssh_key_file: "{{ item.ssh.key_file | default('~/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
     ssh_passphrase: "{{ item.ssh.passphrase }}"
   loop: "{{ user_accounts }}"
 
