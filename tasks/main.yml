@@ -177,12 +177,23 @@
 # Firewall configuration
 # ###############################
 
-# TODO
-# ufw
+# Setup default configuration
+- name: Allow limited ssh connection
+  community.general.ufw:
+    default: "{{ firewall.default_incoming }}"
+    direction: incoming
 
-# ###############################
-# IPS configuration
-# ###############################
+- name: Allow limited ssh connection
+  community.general.ufw:
+    default: "{{ firewall.default_outgoing }}"
+    direction: outgoing
 
-# TODO
-# fail2ban
+# Open ssh port
+# ufw will deny connections if an IP
+# address has attempted to initiate 6 or more connections in the last
+# 30 seconds. See  http://www.debian-administration.org/articles/187
+- name: Allow limited ssh connection
+  community.general.ufw:
+    rule: limit
+    port: ssh
+    proto: tcp

@@ -3,9 +3,12 @@ apt:
   tools:
     - vim
     - ufw
-    - fail2ban
 
 timezone: Europe/Rome
 
 admin_accounts: []
 user_accounts: []
+
+firewall:
+  default_incoming: deny
+  default_outgoing: allow
