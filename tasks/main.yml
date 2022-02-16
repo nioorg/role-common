@@ -178,12 +178,12 @@
 # ###############################
 
 # Setup default configuration
-- name: Allow limited ssh connection
+- name: UFW - default {{ firewall.default_incoming }} incoming traffic
   community.general.ufw:
     default: "{{ firewall.default_incoming }}"
     direction: incoming
 
-- name: Allow limited ssh connection
+- name: UFW - default {{ firewall.default_outgoing }} outgoing traffic
   community.general.ufw:
     default: "{{ firewall.default_outgoing }}"
     direction: outgoing
