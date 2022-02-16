@@ -6,8 +6,21 @@ apt:
 
 timezone: Europe/Rome
 
-admin_accounts: []
-user_accounts: []
+admin_accounts: [
+  # - username: admin
+  #   password: password
+  #   ssh:
+  #     key_file: ~/.ssh/admin_key_file
+  #     passphrase: password
+]
+
+user_accounts: [
+  # - username: user
+  #   password: password
+  #   ssh:
+  #     key_file: ~/.ssh/user_key_file
+  #     passphrase: password
+]
 
 firewall:
   default_incoming: deny

@@ -169,7 +169,7 @@
 # Network configuration
 # ###############################
 
-# TODO
+# TODO https://docs.ansible.com/ansible/latest/collections/community/general/nmcli_module.html
 # Set static IP
 # Optionally configure AP mode
 
