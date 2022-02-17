@@ -30,7 +30,7 @@
           "Current password:": "{{ ansible_first_login_password }}"
           "New password:": "{{ ansible_new_login_password }}"
           "Retype new password:": "{{ ansible_new_login_password }}"
-      ignore_errors: true
+      failed_when: false
 
     - name: If unreachable [3/4 - create/edit the admin account]
       include_tasks: create-user.yml
