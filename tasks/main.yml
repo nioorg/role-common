@@ -197,3 +197,7 @@
     rule: limit
     port: ssh
     proto: tcp
+
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
