@@ -6,15 +6,19 @@
   connection: local
   set_fact:
     # Default ssh key-file path
-    ssh_key_file: "{{ ssh_key_file | default('~/.ssh/' + inventory_hostname + '/' + username + '/rsa') }}"
+    ssh_key_file: "{{ ssh_key_file | default(lookup('env', 'HOME') + '/.ssh/' + inventory_hostname + '/' + username + '/rsa') }}"
     # By default don't use any ssh passphrase
     ssh_passphrase: "{{ ssh_passphrase | default(None) }}"
-        
+
 - name: Ensures secrets directory exists
-  connection: local
   file:
-    path: "{{ ssh_key_file | dirname}}"
+    path: "{{ ssh_key_file | dirname }}"
     state: directory
+    recurse: yes
+    owner: "{{ lookup('env', 'USER') }}"
+    group: "{{ lookup('env', 'USER') }}"
+    mode: '0700'
+  delegate_to: localhost
 
 # Generate keypair for the user
 - name: "Generate openssh key for the user on such host: {{ username }}"
@@ -48,10 +52,12 @@
   community.general.ssh_config:
     user: "{{ lookup('env', 'USER') }}"
     remote_user: "{{ username }}"
-    host: "{{ item }}"
+    host: "{{ item_host }}"
     identity_file: "{{ ssh_key_file }}"
     state: present
   delegate_to: localhost  # Uses local pipenv instead of system python (`connection: local`)
   loop:
     - "{{ inventory_hostname }}"
     - "{{ hostvars[inventory_hostname].get('ansible_host', inventory_hostname) }}"
+  loop_control:
+    loop_var: item_host

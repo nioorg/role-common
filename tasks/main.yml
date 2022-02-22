@@ -38,7 +38,7 @@
         # Custom vars
         username: "{{ ansible_new_login_username }}"
         password: "{{ lookup('password', '~/secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt') }}"
-        ssh_key_file: "{{ '~/.secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/rsa' }}"
+        ssh_key_file: "{{ '~/secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/rsa' }}"
         user_groups:
           - sudo
         # Ansible: forward authentication vars
@@ -68,7 +68,7 @@
   include_tasks: create-user.yml
   vars:
     username: "{{ item.username }}"
-    password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt'))"
+    password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt')) }}"
     user_groups:
       - sudo
     ssh_key_file: "{{ item.ssh.key_file | default('~/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
@@ -79,7 +79,7 @@
   include_tasks: create-user.yml
   vars:
     username: "{{ item.username }}"
-    password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt'))"
+    password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt')) }}"
     ssh_key_file: "{{ item.ssh.key_file | default('~/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
     ssh_passphrase: "{{ item.ssh.passphrase | default(None) }}"
   loop: "{{ user_accounts | default([]) }}"
