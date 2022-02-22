@@ -21,6 +21,17 @@ provisioner:
       callback_whitelist: profile_tasks, timer, yaml
     ssh_connection:
       pipelining: false
+  inventory:
+    group_vars:
+      all:
+        # TODO
+        # ansible_user: admin
+        admin_accounts:
+          - username: admin2
+          - username: admin3
+        user_accounts:
+          - username: user2
+          - username: user3
 verifier:
   name: ansible
 lint: |
