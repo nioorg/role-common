@@ -72,8 +72,8 @@
     user_groups:
       - sudo
     ssh_key_file: "{{ item.ssh.key_file | default('~/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
-    ssh_passphrase: "{{ item.ssh.passphrase }}"
-  loop: "{{ admin_accounts }}"
+    ssh_passphrase: "{{ item.ssh.passphrase | default(None) }}"
+  loop: "{{ admin_accounts | default([]) }}"
 
 - name: Add users
   include_tasks: create-user.yml
@@ -81,8 +81,8 @@
     username: "{{ item.username }}"
     password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt'))"
     ssh_key_file: "{{ item.ssh.key_file | default('~/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
-    ssh_passphrase: "{{ item.ssh.passphrase }}"
-  loop: "{{ user_accounts }}"
+    ssh_passphrase: "{{ item.ssh.passphrase | default(None) }}"
+  loop: "{{ user_accounts | default([]) }}"
 
 - name: Disable root account
   block:
