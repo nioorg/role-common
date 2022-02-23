@@ -149,11 +149,13 @@
     path: /etc/hosts
     search_string: "{{ ansible_hostname }}"
     line: "127.0.0.1 {{ inventory_hostname }}"
+  when: ansible_hostname != inventory_hostname
   become: true
 
 - name: Set hostname [2/2 - update system hostname]
   hostname:
     name: "{{ inventory_hostname }}"
+  when: ansible_hostname != inventory_hostname
   become: true
 
 # ###############################
