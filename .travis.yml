@@ -1,6 +1,6 @@
 ---
 language: python
-python: "2.7"
+python: "3.8"
 
 # Use the new container infrastructure
 sudo: false
@@ -12,8 +12,13 @@ addons:
     - python-pip
 
 install:
-  # Install ansible
-  - pip install ansible
+  # Install pip
+  - pip install pipenv
+
+  # Install environment
+  - pipenv install
+
+  # => you are now inside the pipenv (no need to execute pipenv shell)
 
   # Check ansible version
   - ansible --version
