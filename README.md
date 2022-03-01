@@ -1,9 +1,7 @@
 nioorg-common role
 =========
 
-TODO:
-[![Build Status](https://travis-ci.org/CyVerse-Ansible/ansible-role-template.svg?branch=master)](https://travis-ci.org/CyVerse-Ansible/ansible-role-template)
-[![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-nioorg--common-blue.svg)](https://galaxy.ansible.com/CyVerse-Ansible/ansible-role-template/)
+[![Build Status](https://github.com/nioorg/role-common/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/nioorg/role-common/actions/workflows/build.yml)
 
 Common Ansible role that executes all the tasks to run, setup and initialize a system. It will perform the following actions:
 
