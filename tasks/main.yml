@@ -37,8 +37,8 @@
       vars:
         # Custom vars
         username: "{{ ansible_new_login_username }}"
-        password: "{{ lookup('password', '~/secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt') }}"
-        ssh_key_file: "{{ '~/secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/rsa' }}"
+        password: "{{ lookup('password', lookup('env', 'HOME') + '/secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt') }}"
+        ssh_key_file: "{{ lookup('env', 'HOME') + '/secrets/' + inventory_hostname + '/' + ansible_new_login_username + '/rsa' }}"
         user_groups:
           - sudo
         # Ansible: forward authentication vars
@@ -68,10 +68,10 @@
   include_tasks: create-user.yml
   vars:
     username: "{{ item.username }}"
-    password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt')) }}"
+    password: "{{ item.password | default(lookup('password', lookup('env', 'HOME') + '/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt')) }}"
     user_groups:
       - sudo
-    ssh_key_file: "{{ item.ssh.key_file | default('~/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
+    ssh_key_file: "{{ item.ssh.key_file | default(lookup('env', 'HOME') + '/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
     ssh_passphrase: "{{ item.ssh.passphrase | default(None) }}"
   loop: "{{ admin_accounts | default([]) }}"
 
@@ -79,8 +79,8 @@
   include_tasks: create-user.yml
   vars:
     username: "{{ item.username }}"
-    password: "{{ item.password | default(lookup('password', '~/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt')) }}"
-    ssh_key_file: "{{ item.ssh.key_file | default('~/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
+    password: "{{ item.password | default(lookup('password', lookup('env', 'HOME') + '/secrets/' + inventory_hostname + '/' + item.username + '/password.txt chars=ascii_letters,digits length=15 encrypt=sha512_crypt')) }}"
+    ssh_key_file: "{{ item.ssh.key_file | default(lookup('env', 'HOME') + '/secrets/' + inventory_hostname + '/' + item.username + '/rsa') }}"
     ssh_passphrase: "{{ item.ssh.passphrase | default(None) }}"
   loop: "{{ user_accounts | default([]) }}"
 
@@ -179,16 +179,26 @@
 # Firewall configuration
 # ###############################
 
+- name: Configure IPv6 support
+  lineinfile:
+    path: /etc/default/ufw
+    state: present
+    regexp: '^IPV6='
+    line: 'IPV6={{ firewall.ipv6 | default("yes") }}'
+  become: true
+
 # Setup default configuration
 - name: UFW - default {{ firewall.default_incoming }} incoming traffic
   community.general.ufw:
     default: "{{ firewall.default_incoming }}"
     direction: incoming
+  become: true
 
 - name: UFW - default {{ firewall.default_outgoing }} outgoing traffic
   community.general.ufw:
     default: "{{ firewall.default_outgoing }}"
     direction: outgoing
+  become: true
 
 # Open ssh port
 # ufw will deny connections if an IP
@@ -199,7 +209,10 @@
     rule: limit
     port: ssh
     proto: tcp
+    from_ip: "0.0.0.0/0"
+  become: true
 
 - name: Enable UFW
   community.general.ufw:
     state: enabled
+  become: true

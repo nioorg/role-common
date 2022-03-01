@@ -21,5 +21,6 @@ timezone: Europe/Rome
 #       passphrase: password
 
 firewall:
+#   ipv6: "yes"
   default_incoming: deny
   default_outgoing: allow
