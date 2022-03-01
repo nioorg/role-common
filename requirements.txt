@@ -1,0 +1,11 @@
+ansible
+molecule
+molecule[docker]
+molecule-docker
+molecule-podman
+docker
+pexpect
+bcrypt
+stormssh
+yamllint
+ansible-lint
