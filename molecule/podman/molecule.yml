@@ -2,7 +2,7 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
+  name: podman
 platforms:
   - name: instance
     image: geerlingguy/docker-${MOLECULE_DISTRO:-ubuntu2004}-ansible
@@ -12,8 +12,6 @@ platforms:
     pre_build_image: true
 provisioner:
   name: ansible
-  options:
-    extra_vars: local_group=docker
   config_options:
     defaults:
       interpreter_python: auto_silent
@@ -31,8 +29,6 @@ provisioner:
         user_accounts:
           - username: user2
           - username: user3
-        firewall:
-          ipv6: "no"
 verifier:
   name: ansible
 lint: |
