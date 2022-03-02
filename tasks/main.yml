@@ -209,7 +209,6 @@
     rule: limit
     port: ssh
     proto: tcp
-    from_ip: "0.0.0.0/0"
   become: true
 
 - name: Enable UFW
