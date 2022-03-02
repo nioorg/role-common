@@ -35,7 +35,7 @@ Fundamental role parameters.
 | timezone                  | no       | Europe/Rome | String: timezone database name | Any timezone supported by the linux systems. [Reference](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) |
 | admin_accounts            | no       | []          | Array of `accounts`            | See the following section for details on the object definition |
 | user_accounts             | no       | []          | Array of `accounts`            | See the following section for details on the object definition |
-| firewall.ipv6             | no       | no          | no, yes                        | Flag indicating if ufw should configure the IPv6 table         |
+| firewall_ipv6             | no       | no          | no, yes                        | Flag indicating if ufw should configure the IPv6 table         |
 | firewall.default_incoming | no       | deny        | allow, limit, deny, reject     | The default rule for incoming traffic    |
 | firewall.default_outgoing | no       | allow       | allow, limit, deny, reject     | The default rule for outgoing traffic    |
 
