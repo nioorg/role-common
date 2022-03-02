@@ -20,7 +20,7 @@ timezone: Europe/Rome
 #       key_file: ~/.ssh/user_key_file
 #       passphrase: password
 
+# firewall_ipv6: "yes"
 firewall:
-#   ipv6: "yes"
   default_incoming: deny
   default_outgoing: allow

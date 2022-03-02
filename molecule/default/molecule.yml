@@ -31,8 +31,7 @@ provisioner:
         user_accounts:
           - username: user2
           - username: user3
-        firewall:
-          ipv6: "no"
+        firewall_ipv6: "no"
 verifier:
   name: ansible
 lint: |

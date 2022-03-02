@@ -184,7 +184,7 @@
     path: /etc/default/ufw
     state: present
     regexp: '^IPV6='
-    line: 'IPV6={{ firewall.ipv6 | default("yes") }}'
+    line: "IPV6={{ firewall_ipv6 | default('yes') }}"
   become: true
 
 # Setup default configuration
