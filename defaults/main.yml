@@ -1,2 +1,11 @@
 ---
-# defaults file for roles/common
+apt:
+  tools:
+    - vim
+    - ufw
+
+timezone: Europe/Rome
+
+firewall_ipv6: "yes"
+firewall_default_incoming: deny
+firewall_default_outgoing: allow

@@ -1,11 +1,4 @@
 ---
-apt:
-  tools:
-    - vim
-    - ufw
-
-timezone: Europe/Rome
-
 # admin_accounts:
 #   - username: admin
 #     password: password
@@ -19,8 +12,3 @@ timezone: Europe/Rome
 #     ssh:
 #       key_file: ~/.ssh/user_key_file
 #       passphrase: password
-
-# firewall_ipv6: "yes"
-firewall:
-  default_incoming: deny
-  default_outgoing: allow

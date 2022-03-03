@@ -184,19 +184,19 @@
     path: /etc/default/ufw
     state: present
     regexp: '^IPV6='
-    line: "IPV6={{ firewall_ipv6 | default('yes') }}"
+    line: "IPV6={{ firewall_ipv6 }}"
   become: true
 
 # Setup default configuration
-- name: UFW - default {{ firewall.default_incoming }} incoming traffic
+- name: UFW - default {{ firewall_default_incoming }} incoming traffic
   community.general.ufw:
-    default: "{{ firewall.default_incoming }}"
+    default: "{{ firewall_default_incoming }}"
     direction: incoming
   become: true
 
-- name: UFW - default {{ firewall.default_outgoing }} outgoing traffic
+- name: UFW - default {{ firewall_default_outgoing }} outgoing traffic
   community.general.ufw:
-    default: "{{ firewall.default_outgoing }}"
+    default: "{{ firewall_default_outgoing }}"
     direction: outgoing
   become: true
 
