@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: 'common'
 
@@ -39,20 +39,21 @@ jobs:
 
   molecule:
     name: Molecule
-    runs-on: ubuntu-latest
+    runs-on: macos-10.15
+
     strategy:
       matrix:
         distro:
-          - ubuntu2004
+          - ubuntu/focal64
         scenario:
-          - docker
+          - vagrant
 
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: 'common'
-          
+
       - name: Set up Python 3.
         uses: actions/setup-python@v2
         with:
@@ -62,6 +63,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
+          python3 -m pip install passlib
 
       - name: Run Molecule tests.
         run: molecule test -s ${{ matrix.scenario }}
@@ -69,3 +71,4 @@ jobs:
           PY_COLORS: '1'
           ANSIBLE_FORCE_COLOR: '1'
           MOLECULE_DISTRO: ${{ matrix.distro }}
+          HOST_GROUP: everyone

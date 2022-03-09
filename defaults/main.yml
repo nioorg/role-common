@@ -4,7 +4,7 @@ apt:
     - vim
     - ufw
 
-timezone: Europe/Rome
+timezone: Europe/London
 
 firewall_ipv6: "yes"
 firewall_default_incoming: deny

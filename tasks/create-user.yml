@@ -22,9 +22,10 @@
     path: "{{ ssh_key_file | dirname }}"
     state: directory
     owner: "{{ local_user | default(lookup('env', 'USER')) }}"
-    group: "{{ local_group | default(lookup('env', 'USER')) }}"
+    group: "{{ local_group | default('nogroup') }}"
     mode: '0700'
   delegate_to: localhost
+  become: true
 
 # Generate keypair for the user
 - name: "Generate openssh key for the user on such host: {{ username }}"
@@ -58,7 +59,7 @@
   community.general.ssh_config:
     host: "{{ item_host }}-{{ username }}"
     user: "{{ local_user | default(lookup('env', 'USER')) }}"
-    group: "{{ local_group | default(lookup('env', 'USER')) }}"
+    group: "{{ local_group | default('nogroup') }}"
     remote_user: "{{ username }}"
     hostname: "{{ item_host }}"
     identity_file: "{{ ssh_key_file }}"
